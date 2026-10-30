@@ -33,6 +33,7 @@ const features = [
 export default async function LoginPage({ searchParams }: PageProps<"/login">) {
   const { error } = await searchParams;
   const message = typeof error === "string" ? (ERRORS[error] ?? "Sign-in failed. Please try again.") : null;
+  const googleConfigured = Boolean(process.env.AUTH_GOOGLE_ID && process.env.AUTH_GOOGLE_SECRET);
 
   return (
     <main className="grid min-h-screen lg:grid-cols-2">
@@ -75,11 +76,18 @@ export default async function LoginPage({ searchParams }: PageProps<"/login">) {
               {message}
             </p>
           )}
-          <form action={signInWithGoogle}>
-            <Button type="submit" variant="outline" size="lg" className="w-full">
-              <GoogleIcon /> Continue with Google
-            </Button>
-          </form>
+          {googleConfigured ? (
+            <form action={signInWithGoogle}>
+              <Button type="submit" variant="outline" size="lg" className="w-full">
+                <GoogleIcon /> Continue with Google
+              </Button>
+            </form>
+          ) : (
+            <p role="status" className="rounded-md border border-warning/40 bg-warning/10 p-3 text-sm">
+              Google sign-in isn&apos;t set up yet. The administrator needs to add <code>AUTH_GOOGLE_ID</code> and{" "}
+              <code>AUTH_GOOGLE_SECRET</code> to the server settings.
+            </p>
+          )}
           {devLoginEnabled && (
             <form action={devSignIn} className="space-y-3 rounded-lg border border-dashed border-warning p-4">
               <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
