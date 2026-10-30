@@ -34,33 +34,49 @@ function NavLink({ href, label, icon: Icon }: (typeof employeeLinks)[number]) {
   return (
     <Link
       href={href}
+      aria-current={active ? "page" : undefined}
       className={cn(
-        "flex shrink-0 items-center gap-2.5 rounded-md px-3 py-2 text-sm font-medium transition-colors",
+        "relative flex shrink-0 items-center gap-2.5 rounded-lg px-3 py-2 text-sm font-medium transition-all",
         active
-          ? "bg-sidebar-accent text-white"
-          : "text-sidebar-muted hover:bg-sidebar-accent/60 hover:text-sidebar-foreground",
+          ? "bg-primary/10 text-primary shadow-[inset_0_0_0_1px_color-mix(in_oklch,var(--primary)_25%,transparent)]"
+          : "text-sidebar-muted hover:bg-white/[0.05] hover:text-sidebar-foreground",
       )}
     >
+      {active && (
+        <span
+          aria-hidden
+          className="absolute -left-3 top-1/2 hidden h-5 w-1 -translate-y-1/2 rounded-r-full bg-primary shadow-[0_0_12px_var(--primary)] lg:block"
+        />
+      )}
       <Icon className="size-4" />
       {label}
     </Link>
   );
 }
 
+function SectionLabel({ children, first }: { children: React.ReactNode; first?: boolean }) {
+  return (
+    <p
+      className={cn(
+        "hidden px-3 pb-1.5 font-mono text-[10px] uppercase tracking-[0.2em] text-sidebar-muted/80 lg:block",
+        first ? "pt-1" : "pt-6",
+      )}
+    >
+      {children}
+    </p>
+  );
+}
+
 export function Nav({ isAdmin }: { isAdmin: boolean }) {
   return (
     <nav className="flex gap-1 overflow-x-auto lg:flex-col lg:overflow-visible">
-      <p className="hidden px-3 pb-1 pt-2 text-[11px] font-semibold uppercase tracking-wider text-sidebar-muted lg:block">
-        Workspace
-      </p>
+      <SectionLabel first>{"// Workspace"}</SectionLabel>
       {employeeLinks.map((l) => (
         <NavLink key={l.href} {...l} />
       ))}
       {isAdmin && (
         <>
-          <p className="hidden px-3 pb-1 pt-5 text-[11px] font-semibold uppercase tracking-wider text-sidebar-muted lg:block">
-            Administration
-          </p>
+          <SectionLabel>{"// Command"}</SectionLabel>
           {adminLinks.map((l) => (
             <NavLink key={l.href} {...l} />
           ))}

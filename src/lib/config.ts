@@ -34,7 +34,7 @@ export const config = {
   security: {
     allowedDomains: list(process.env.ALLOWED_EMAIL_DOMAINS),
     adminEmails: list(process.env.ADMIN_EMAILS),
-    maxAccuracyMeters: num(process.env.MAX_GPS_ACCURACY_METERS, 3000),
+    maxAccuracyMeters: num(process.env.MAX_GPS_ACCURACY_METERS, 150),
     ipMismatchKm: num(process.env.IP_MISMATCH_KM, 300),
   },
 };

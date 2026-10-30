@@ -5,7 +5,7 @@ export function Avatar({ name, image, className }: { name: string; image?: strin
   return (
     <span
       className={cn(
-        "relative inline-flex size-8 shrink-0 items-center justify-center overflow-hidden rounded-full bg-primary/15 text-xs font-semibold text-primary",
+        "relative inline-flex size-8 shrink-0 items-center justify-center overflow-hidden rounded-full bg-[linear-gradient(135deg,color-mix(in_oklch,var(--primary)_28%,transparent),color-mix(in_oklch,var(--glow-2)_28%,transparent))] text-xs font-semibold text-foreground ring-1 ring-primary/30",
         className,
       )}
     >

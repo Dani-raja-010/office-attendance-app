@@ -15,7 +15,7 @@ GPS-verified attendance, daily task tracking, and end-of-day reporting, built on
 **Employees**
 - **Email + password sign-in.** An admin adds the employee's email and gets a one-time **setup code** (valid 7 days) to send them; the employee opens */setup*, enters the code and picks a password. Passwords are hashed with scrypt, and 5 wrong attempts lock the account for 15 minutes. Google sign-in is also offered once `AUTH_GOOGLE_ID`/`AUTH_GOOGLE_SECRET` are set.
 - A permanent employee ID (`EMP-1001`, `EMP-1002`, …) is assigned by a database sequence when the account is first set up.
-- One-tap **check-in / check-out** that captures browser latitude and longitude. The server records the UTC timestamp and the office-local time; the client never sets the time.
+- One-tap **check-in / check-out** that samples the device location for up to 15 s and keeps the most precise fix (stopping early at ±20 m). The server records the UTC timestamp and the office-local time; the client never sets the time.
 - **Geofencing**: each check-in is classed as *Office* or *Remote* by its distance from the office (`OFFICE_RADIUS_METERS`). It is marked *Late* when it comes after shift start plus the grace period.
 - **Tasks**: description, status (To do / In progress / Completed / Blocked), hours spent, and a per-task progress bar.
 - **EOD report**: achievements, blockers, next-day plan, and overall progress (suggested from the average of the day's tasks).
@@ -38,7 +38,8 @@ Browser coordinates can't be fully trusted, so `src/lib/geo.ts` checks every rea
 | Out-of-range / (0,0) coordinates | Rejected |
 | Accuracy worse than `MAX_GPS_ACCURACY_METERS` | Rejected |
 | Position timestamp older than 10 min | Rejected (older than 2 min: flagged) |
-| Accuracy > 150 m or missing | Flagged `low_accuracy` |
+| Accuracy worse than 75 m | Flagged `low_accuracy` |
+| Accuracy missing | Rejected |
 | Accuracy of exactly 0, or coordinates with only 3 decimals (hand-typed values) | Flagged `suspicious_precision` |
 | GPS more than `IP_MISMATCH_KM` away from Vercel's IP geolocation | Flagged `ip_location_mismatch` |
 | Check-in to check-out movement faster than 900 km/h | Flagged `impossible_travel` |

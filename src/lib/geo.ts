@@ -18,6 +18,8 @@ export type LocationVerdict =
   | { ok: true; distanceMeters: number | null; locationType: LocationType; flags: string[] };
 
 const EARTH_RADIUS_M = 6_371_000;
+/** Accepted fixes less precise than this are flagged for admin review. */
+const LOW_ACCURACY_FLAG_M = 75;
 
 export function haversineMeters(lat1: number, lng1: number, lat2: number, lng2: number): number {
   const toRad = (d: number) => (d * Math.PI) / 180;
@@ -59,10 +61,14 @@ export function verifyLocation(reading: GeoReading, now: Date, ipGeo: IpGeo): Lo
   if (Math.abs(latitude) < 1e-6 && Math.abs(longitude) < 1e-6) {
     return { ok: false, error: "Invalid location reading. Please enable precise location and try again." };
   }
-  if (accuracy != null && accuracy > config.security.maxAccuracyMeters) {
+  const maxAccuracy = config.security.maxAccuracyMeters;
+  if (accuracy == null || accuracy > maxAccuracy) {
+    const got = accuracy == null ? "unknown" : `±${Math.round(accuracy)} m`;
     return {
       ok: false,
-      error: `Location accuracy is too low (±${Math.round(accuracy)} m). Enable precise location and try again.`,
+      error:
+        `Your location isn't precise enough (${got}; needs ±${maxAccuracy} m or better). ` +
+        "Turn on precise location / GPS, or use your phone, move near a window, and try again.",
     };
   }
   if (positionTimestamp != null) {
@@ -73,7 +79,7 @@ export function verifyLocation(reading: GeoReading, now: Date, ipGeo: IpGeo): Lo
     if (ageMs > 2 * 60_000) flags.push("stale_position");
   }
 
-  if (accuracy == null || accuracy > 150) flags.push("low_accuracy");
+  if (accuracy > LOW_ACCURACY_FLAG_M) flags.push("low_accuracy");
   // Real GPS fixes carry high-precision decimals and non-zero accuracy; hand-typed values rarely do.
   if (accuracy === 0 || (decimals(latitude) <= 3 && decimals(longitude) <= 3)) flags.push("suspicious_precision");
 

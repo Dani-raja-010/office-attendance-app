@@ -40,7 +40,7 @@ export function EmployeeActions({
         value={role}
         disabled={pending}
         onChange={(e) => run({ role: e.target.value as "employee" | "admin" })}
-        className="h-8 w-32"
+        className="h-8 w-36"
       >
         <option value="employee">Employee</option>
         <option value="admin">Admin</option>
