@@ -4,6 +4,8 @@ import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { sql } from "@/lib/db";
 import { requireAdmin } from "@/lib/session";
+import { issueSetupCode } from "@/lib/passwords";
+import { getUserByEmail, isAllowedEmail } from "@/lib/users";
 import type { ActionResult } from "@/lib/utils";
 
 const updateSchema = z.object({
@@ -33,8 +35,13 @@ export async function updateEmployee(userId: string, input: unknown): Promise<Ac
 
 const emailSchema = z.string().trim().toLowerCase().email().max(255);
 
-/** Approves an individual email (e.g. a personal Gmail) to sign in, reactivating any existing account. */
-export async function addAllowedEmail(_prev: ActionResult | null, formData: FormData): Promise<ActionResult> {
+export type SetupCodeResult = { ok: true; email: string; code: string } | { ok: false; error: string };
+
+/**
+ * Approves an individual email (e.g. a personal Gmail), reactivating any existing
+ * account, and returns a setup code the admin shares so the person can set a password.
+ */
+export async function addAllowedEmail(_prev: SetupCodeResult | null, formData: FormData): Promise<SetupCodeResult> {
   const admin = await requireAdmin();
   const parsed = emailSchema.safeParse(formData.get("email"));
   if (!parsed.success) return { ok: false, error: "Enter a valid email address." };
@@ -42,8 +49,20 @@ export async function addAllowedEmail(_prev: ActionResult | null, formData: Form
 
   await sql`INSERT INTO allowed_emails (email, added_by) VALUES (${email}, ${admin.id}) ON CONFLICT (email) DO NOTHING`;
   await sql`UPDATE users SET is_active = true WHERE email = ${email}`;
+  const code = await issueSetupCode(email, admin.id);
   revalidatePath("/admin", "layout");
-  return { ok: true, message: `${email} can now sign in.` };
+  return { ok: true, email, code };
+}
+
+/** Issues a new setup code so an approved person can set or reset their password. */
+export async function createSetupCode(email: string): Promise<SetupCodeResult> {
+  const admin = await requireAdmin();
+  const parsed = emailSchema.safeParse(email);
+  if (!parsed.success) return { ok: false, error: "Invalid request." };
+  if (!(await isAllowedEmail(parsed.data)) && !(await getUserByEmail(parsed.data))) {
+    return { ok: false, error: "Add this email to the approved list first." };
+  }
+  return { ok: true, email: parsed.data, code: await issueSetupCode(parsed.data, admin.id) };
 }
 
 /** Revokes an approved email and deactivates its account so open sessions stop working too. */

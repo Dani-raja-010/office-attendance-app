@@ -5,14 +5,17 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Select } from "@/components/ui/form";
 import { updateEmployee } from "@/app/actions/admin";
+import { SetupCodeButton } from "@/components/allowed-emails";
 
 export function EmployeeActions({
   userId,
+  email,
   role,
   isActive,
   isSelf,
 }: {
   userId: string;
+  email: string;
   role: "employee" | "admin";
   isActive: boolean;
   isSelf: boolean;
@@ -31,6 +34,7 @@ export function EmployeeActions({
 
   return (
     <div className="flex items-center justify-end gap-2">
+      <SetupCodeButton email={email} label="Reset password" />
       <Select
         aria-label="Role"
         value={role}

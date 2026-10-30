@@ -2,6 +2,7 @@ import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import { authConfig } from "./auth.config";
 import { getUserByEmail, isAllowedEmail, upsertUserOnLogin } from "@/lib/users";
+import { verifyLogin } from "@/lib/passwords";
 
 /** Local-only sign-in that bypasses Google. Never enabled in production builds. */
 export const devLoginEnabled = process.env.NODE_ENV !== "production" && process.env.DEV_LOGIN === "true";
@@ -20,13 +21,28 @@ const devProvider = Credentials({
   },
 });
 
+/** Email + password sign-in; passwords are set on /setup with a code from an admin. */
+const passwordProvider = Credentials({
+  id: "password",
+  name: "Email and password",
+  credentials: { email: {}, password: {} },
+  async authorize(credentials) {
+    const email = String(credentials?.email ?? "").trim().toLowerCase();
+    const password = String(credentials?.password ?? "");
+    if (!email || !password || !(await isAllowedEmail(email))) return null;
+    const user = await verifyLogin(email, password);
+    return user ? { id: user.id, email: user.email, name: user.name } : null;
+  },
+});
+
 export const { handlers, auth, signIn, signOut } = NextAuth({
   ...authConfig,
-  providers: devLoginEnabled ? [...authConfig.providers, devProvider] : authConfig.providers,
+  providers: [...authConfig.providers, passwordProvider, ...(devLoginEnabled ? [devProvider] : [])],
   callbacks: {
     ...authConfig.callbacks,
     async signIn({ account, profile }) {
       if (account?.provider === "dev-login") return devLoginEnabled;
+      if (account?.provider === "password") return true; // checked in authorize()
       if (account?.provider !== "google" || !profile?.email) return false;
       if (profile.email_verified === false) return false;
       if (!(await isAllowedEmail(profile.email))) return false;

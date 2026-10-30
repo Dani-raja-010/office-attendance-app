@@ -1,15 +1,18 @@
 import type { Metadata } from "next";
-import { CalendarCheck, MapPin, ListChecks, ShieldCheck } from "lucide-react";
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/form";
+import { AuthShell } from "@/components/auth-shell";
+import { PasswordLoginForm } from "@/components/auth-forms";
 import { devSignIn, signInWithGoogle } from "@/app/actions/auth";
 import { devLoginEnabled } from "@/auth";
+import { googleEnabled } from "@/auth.config";
 
 export const metadata: Metadata = { title: "Sign in" };
 
 const ERRORS: Record<string, string> = {
-  AccessDenied: "Access denied. Sign in with your company Google Workspace account, or ask an admin to activate your account.",
-  CredentialsSignin: "Development login failed. Use an email on an allowed domain.",
+  AccessDenied: "Access denied. Your account isn't approved yet, or it has been deactivated. Contact your admin.",
+  CredentialsSignin: "Sign-in failed. Check your email and password.",
   Configuration: "Sign-in is not configured correctly. Please contact your administrator.",
 };
 
@@ -24,87 +27,48 @@ function GoogleIcon() {
   );
 }
 
-const features = [
-  { icon: MapPin, title: "GPS-verified check-in", text: "Location is validated on the server against the office geofence." },
-  { icon: ListChecks, title: "Daily task tracking", text: "Log tasks, hours and progress, then submit your end-of-day report." },
-  { icon: ShieldCheck, title: "Live admin oversight", text: "Real-time presence counts and one-click payroll exports." },
-];
-
 export default async function LoginPage({ searchParams }: PageProps<"/login">) {
   const { error } = await searchParams;
   const message = typeof error === "string" ? (ERRORS[error] ?? "Sign-in failed. Please try again.") : null;
-  const googleConfigured = Boolean(process.env.AUTH_GOOGLE_ID && process.env.AUTH_GOOGLE_SECRET);
 
   return (
-    <main className="grid min-h-screen lg:grid-cols-2">
-      <section className="hidden flex-col justify-between bg-sidebar p-12 text-sidebar-foreground lg:flex">
-        <div className="flex items-center gap-2 text-lg font-semibold text-white">
-          <CalendarCheck className="size-6" /> WorkTrack
-        </div>
-        <div className="space-y-8">
-          <h2 className="max-w-md text-3xl font-semibold leading-tight text-white">
-            Attendance and daily progress, in one place.
-          </h2>
-          <ul className="space-y-5">
-            {features.map(({ icon: Icon, title, text }) => (
-              <li key={title} className="flex gap-3">
-                <span className="mt-0.5 rounded-lg bg-sidebar-accent p-2">
-                  <Icon className="size-4 text-white" />
-                </span>
-                <div>
-                  <p className="font-medium text-white">{title}</p>
-                  <p className="text-sm text-sidebar-muted">{text}</p>
-                </div>
-              </li>
-            ))}
-          </ul>
-        </div>
-        <p className="text-xs text-sidebar-muted">© {new Date().getFullYear()} WorkTrack</p>
-      </section>
-
-      <section className="flex items-center justify-center p-6">
-        <div className="w-full max-w-sm space-y-6">
-          <div className="space-y-2 text-center">
-            <div className="mx-auto flex size-12 items-center justify-center rounded-xl bg-primary text-primary-foreground lg:hidden">
-              <CalendarCheck className="size-6" />
-            </div>
-            <h1 className="text-2xl font-semibold tracking-tight">Welcome back</h1>
-            <p className="text-sm text-muted-foreground">Sign in with your company Google account to continue.</p>
+    <AuthShell title="Welcome back" subtitle="Sign in with the email your admin approved.">
+      {message && (
+        <p role="alert" className="rounded-md border border-destructive/30 bg-destructive/10 p-3 text-sm text-destructive">
+          {message}
+        </p>
+      )}
+      <PasswordLoginForm />
+      <p className="text-center text-sm text-muted-foreground">
+        First time here, or have a new setup code?{" "}
+        <Link href="/setup" className="font-medium text-primary underline-offset-4 hover:underline">
+          Set up your account
+        </Link>
+      </p>
+      {googleEnabled && (
+        <>
+          <div className="flex items-center gap-3 text-xs text-muted-foreground">
+            <span className="h-px flex-1 bg-border" /> or <span className="h-px flex-1 bg-border" />
           </div>
-          {message && (
-            <p role="alert" className="rounded-md border border-destructive/30 bg-destructive/10 p-3 text-sm text-destructive">
-              {message}
-            </p>
-          )}
-          {googleConfigured ? (
-            <form action={signInWithGoogle}>
-              <Button type="submit" variant="outline" size="lg" className="w-full">
-                <GoogleIcon /> Continue with Google
-              </Button>
-            </form>
-          ) : (
-            <p role="status" className="rounded-md border border-warning/40 bg-warning/10 p-3 text-sm">
-              Google sign-in isn&apos;t set up yet. The administrator needs to add <code>AUTH_GOOGLE_ID</code> and{" "}
-              <code>AUTH_GOOGLE_SECRET</code> to the server settings.
-            </p>
-          )}
-          {devLoginEnabled && (
-            <form action={devSignIn} className="space-y-3 rounded-lg border border-dashed border-warning p-4">
-              <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-                Development login (DEV_LOGIN=true)
-              </p>
-              <Input name="email" type="email" required placeholder="you@demo.local" defaultValue="admin@demo.local" />
-              <Input name="name" placeholder="Display name (optional)" />
-              <Button type="submit" variant="secondary" className="w-full">
-                Sign in without Google
-              </Button>
-            </form>
-          )}
-          <p className="text-center text-xs text-muted-foreground">
-            Only company domain accounts are permitted. Your employee ID is assigned automatically on first sign-in.
+          <form action={signInWithGoogle}>
+            <Button type="submit" variant="outline" size="lg" className="w-full">
+              <GoogleIcon /> Continue with Google
+            </Button>
+          </form>
+        </>
+      )}
+      {devLoginEnabled && (
+        <form action={devSignIn} className="space-y-3 rounded-lg border border-dashed border-warning p-4">
+          <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+            Development login (DEV_LOGIN=true)
           </p>
-        </div>
-      </section>
-    </main>
+          <Input name="email" type="email" required placeholder="you@demo.local" defaultValue="admin@demo.local" />
+          <Input name="name" placeholder="Display name (optional)" />
+          <Button type="submit" variant="secondary" className="w-full">
+            Sign in without a password
+          </Button>
+        </form>
+      )}
+    </AuthShell>
   );
 }

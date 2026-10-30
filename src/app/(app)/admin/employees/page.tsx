@@ -22,14 +22,14 @@ export default async function EmployeesPage() {
     <>
       <PageHeader
         title="Employees"
-        description={`${users.length} accounts · ${admins} admin${admins === 1 ? "" : "s"}. Approved people get an account and employee ID on their first Google sign-in.`}
+        description={`${users.length} accounts · ${admins} admin${admins === 1 ? "" : "s"}. Approved people get an account and employee ID when they first set up their account.`}
       />
       <Card className="mb-6">
         <CardHeader>
           <CardTitle>Approved emails</CardTitle>
           <CardDescription>
-            Only these Google accounts (plus admins and any company domain in settings) can sign in. Removing someone
-            also deactivates their account.
+            Add an employee&apos;s email to get a setup code for them. Only these emails (plus admins) can sign in.
+            Removing someone also deactivates their account.
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-3">
@@ -90,7 +90,7 @@ export default async function EmployeesPage() {
                       {u.last_login_at ? dateFmt.format(u.last_login_at) : "—"}
                     </TableCell>
                     <TableCell>
-                      <EmployeeActions userId={u.id} role={u.role} isActive={u.is_active} isSelf={u.id === me.id} />
+                      <EmployeeActions userId={u.id} email={u.email} role={u.role} isActive={u.is_active} isSelf={u.id === me.id} />
                     </TableCell>
                   </TableRow>
                 ))}

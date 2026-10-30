@@ -5,7 +5,7 @@ GPS-verified attendance, daily task tracking, and end-of-day reporting, built on
 | Layer | Technology |
 | --- | --- |
 | Framework | Next.js 16 (App Router, TypeScript, Server Actions) |
-| Auth | Auth.js v5 (NextAuth) — Google OAuth 2.0, JWT sessions |
+| Auth | Auth.js v5 (NextAuth) — email + password (admin-issued setup codes), optional Google OAuth, JWT sessions |
 | Database | PostgreSQL (Neon / Supabase) via `postgres` |
 | UI | Tailwind CSS v4 + shadcn-style components |
 | Hosting | Vercel |
@@ -13,7 +13,8 @@ GPS-verified attendance, daily task tracking, and end-of-day reporting, built on
 ## Features
 
 **Employees**
-- Google sign-in restricted to company domains (`ALLOWED_EMAIL_DOMAINS`). A permanent employee ID (`EMP-1001`, `EMP-1002`, …) is assigned by a database sequence on first login.
+- **Email + password sign-in.** An admin adds the employee's email and gets a one-time **setup code** (valid 7 days) to send them; the employee opens */setup*, enters the code and picks a password. Passwords are hashed with scrypt, and 5 wrong attempts lock the account for 15 minutes. Google sign-in is also offered once `AUTH_GOOGLE_ID`/`AUTH_GOOGLE_SECRET` are set.
+- A permanent employee ID (`EMP-1001`, `EMP-1002`, …) is assigned by a database sequence when the account is first set up.
 - One-tap **check-in / check-out** that captures browser latitude and longitude. The server records the UTC timestamp and the office-local time; the client never sets the time.
 - **Geofencing**: each check-in is classed as *Office* or *Remote* by its distance from the office (`OFFICE_RADIUS_METERS`). It is marked *Late* when it comes after shift start plus the grace period.
 - **Tasks**: description, status (To do / In progress / Completed / Blocked), hours spent, and a per-task progress bar.
@@ -26,7 +27,7 @@ GPS-verified attendance, daily task tracking, and end-of-day reporting, built on
 - Attendance records filtered by date range and employee.
 - Reports & tasks view per employee.
 - **One-click CSV / Excel export** of attendance, EOD reports, and tasks for payroll and audit. Exports are protected against formula injection.
-- **Approved emails**: add individual Google accounts (e.g. personal Gmail) under *Employees* so they can sign in without a company domain. Removing an email also deactivates the account.
+- **Approved emails**: add employees (e.g. personal Gmail addresses) under *Employees* and send them their setup code. *Reset password* issues a new code. Removing an email also deactivates the account.
 - Employee management: promote or demote admins, deactivate or reactivate accounts. Changes apply immediately because roles are re-read from the DB on every request.
 
 ### Anti-spoofing (server-side)
@@ -49,7 +50,10 @@ Flags show up as badges on the admin dashboard and in exports.
 ### 1. Database
 Create a PostgreSQL database on [Neon](https://neon.tech) or [Supabase](https://supabase.com) and copy the **pooled** connection string.
 
-### 2. Google OAuth
+### 2. First admin
+Put your email in `ADMIN_EMAILS` and a secret phrase in `ADMIN_SETUP_CODE`. Open */setup*, enter your email and that code, and choose your password. You can then add employees from *Admin → Employees*.
+
+### 2b. Google OAuth (optional)
 In [Google Cloud Console → Credentials](https://console.cloud.google.com/apis/credentials), create an *OAuth client ID* (Web application) and add these authorized redirect URIs:
 - `http://localhost:3000/api/auth/callback/google`
 - `https://<your-vercel-domain>/api/auth/callback/google`
@@ -79,7 +83,9 @@ See [`.env.example`](.env.example) for the full annotated list. Key ones:
 | --- | --- |
 | `DATABASE_URL` | Postgres connection string |
 | `DATABASE_POOL_MAX` | Max connections per instance (default 5) |
-| `AUTH_SECRET`, `AUTH_GOOGLE_ID`, `AUTH_GOOGLE_SECRET` | Auth.js + Google OAuth |
+| `AUTH_SECRET` | Signs session cookies |
+| `ADMIN_SETUP_CODE` | Lets an `ADMIN_EMAILS` address set or reset its password on */setup* |
+| `AUTH_GOOGLE_ID`, `AUTH_GOOGLE_SECRET` | Optional Google sign-in |
 | `ALLOWED_EMAIL_DOMAINS` | Company domains allowed to sign in. Optional: without it, only `ADMIN_EMAILS` and emails approved on the *Employees* page can sign in |
 | `ADMIN_EMAILS` | Emails granted admin on login |
 | `OFFICE_LAT`, `OFFICE_LNG`, `OFFICE_RADIUS_METERS` | Geofence. If unset, check-ins are stored as *Unverified* |
