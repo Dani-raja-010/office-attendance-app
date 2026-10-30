@@ -81,7 +81,7 @@ function LiveClock() {
   }, []);
   return (
     <div className="text-center">
-      <div className="text-4xl font-bold tabular-nums tracking-tight">
+      <div className="font-heading text-4xl font-bold tabular-nums tracking-tight">
         {now ? now.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", second: "2-digit" }) : "--:--:--"}
       </div>
       <div className="mt-1 text-sm text-muted-foreground">
@@ -127,7 +127,7 @@ function OrbButton({
           aria-hidden
           className={cn(
             "absolute inset-0 rounded-full p-[2px]",
-            "bg-[conic-gradient(from_0deg,var(--orb),var(--accent-2),color-mix(in_oklch,var(--orb)_20%,transparent)_70%,var(--orb))]",
+            "bg-[conic-gradient(from_0deg,var(--orb),var(--accent-2)_45%,var(--highlight)_75%,var(--orb))]",
             busy ? "animate-spin-slow" : "opacity-80",
           )}
         >

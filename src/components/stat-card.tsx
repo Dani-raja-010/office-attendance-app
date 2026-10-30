@@ -29,7 +29,7 @@ export function StatCard({
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
           <p className="text-sm font-medium text-muted-foreground">{label}</p>
-          <p className={cn("mt-1.5 text-3xl font-bold tabular-nums tracking-tight", t.value)}>{value}</p>
+          <p className={cn("mt-1.5 font-heading text-3xl font-bold tabular-nums tracking-tight", t.value)}>{value}</p>
           {hint && <p className="mt-1 line-clamp-2 text-xs text-muted-foreground">{hint}</p>}
         </div>
         <span className={cn("shrink-0 rounded-xl p-2.5", t.icon)}>

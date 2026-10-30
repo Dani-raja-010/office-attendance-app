@@ -51,6 +51,9 @@ function NavLink({ href, label, icon: Icon }: (typeof employeeLinks)[number]) {
         <Icon className="size-4" />
       </span>
       {label}
+      {active && (
+        <span aria-hidden className="ml-auto size-1.5 rounded-full bg-highlight shadow-[0_0_8px_var(--highlight)]" />
+      )}
     </Link>
   );
 }

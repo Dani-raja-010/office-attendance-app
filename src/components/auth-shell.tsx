@@ -11,9 +11,9 @@ const features = [
 function Orbs() {
   return (
     <div aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden">
-      <div className="absolute -left-24 top-10 size-96 animate-float rounded-full bg-[oklch(0.86_0.09_290)] opacity-50 blur-3xl" />
-      <div className="absolute bottom-0 left-1/3 size-80 animate-float rounded-full bg-[oklch(0.9_0.08_45)] opacity-60 blur-3xl [animation-delay:-5s]" />
-      <div className="absolute right-0 top-1/3 size-72 animate-float rounded-full bg-[oklch(0.9_0.07_350)] opacity-45 blur-3xl [animation-delay:-9s]" />
+      <div className="absolute -left-24 top-10 size-96 animate-float rounded-full bg-[oklch(0.82_0.11_255)] opacity-45 blur-3xl" />
+      <div className="absolute bottom-0 left-1/3 size-80 animate-float rounded-full bg-[oklch(0.93_0.13_95)] opacity-60 blur-3xl [animation-delay:-5s]" />
+      <div className="absolute right-0 top-1/3 size-72 animate-float rounded-full bg-[oklch(0.88_0.08_225)] opacity-45 blur-3xl [animation-delay:-9s]" />
     </div>
   );
 }
@@ -56,7 +56,7 @@ export function AuthShell({ title, subtitle, children }: { title: string; subtit
         <div className="space-y-10">
           <div className="space-y-4">
             <h2 className="max-w-lg text-5xl font-bold leading-[1.08] tracking-tight">
-              Your team&apos;s day, <span className="text-brand">beautifully organised.</span>
+              Your team&apos;s day, <span className="marker text-primary">beautifully organised.</span>
             </h2>
             <p className="max-w-md text-lg text-muted-foreground">
               Attendance, tasks and daily reports in one calm, simple place.
