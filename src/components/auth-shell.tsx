@@ -1,27 +1,47 @@
-import { MapPin, ListChecks, ShieldCheck } from "lucide-react";
+import { Building2, CheckCircle2, ListChecks, MapPin, ShieldCheck } from "lucide-react";
 import { Brand } from "@/components/brand";
 
 const features = [
-  { icon: MapPin, title: "GPS-verified check-in", text: "Every check-in is validated on the server against the office geofence." },
-  { icon: ListChecks, title: "Daily task tracking", text: "Log tasks, hours and progress, then file your end-of-day report." },
-  { icon: ShieldCheck, title: "Live command view", text: "Real-time presence counts and one-click payroll exports." },
+  { icon: MapPin, title: "Location-verified check-in", text: "Every check-in is matched against the office location." },
+  { icon: ListChecks, title: "Daily task tracking", text: "Log tasks, hours and progress, then send your end-of-day report." },
+  { icon: ShieldCheck, title: "Live team overview", text: "See who's in at a glance and export payroll in one click." },
 ];
 
-/** Decorative radar: concentric rings with a rotating sweep. */
-function Radar() {
+/** Soft floating colour orbs behind the sign-in pages. */
+function Orbs() {
   return (
-    <div aria-hidden className="pointer-events-none absolute -right-72 top-1/2 size-[640px] -translate-y-1/2 opacity-60">
-      {[1, 0.78, 0.56, 0.34].map((s) => (
-        <div
-          key={s}
-          className="absolute inset-0 m-auto rounded-full border border-primary/15"
-          style={{ width: `${s * 100}%`, height: `${s * 100}%` }}
-        />
-      ))}
-      <div className="absolute inset-0 animate-[spin_8s_linear_infinite] rounded-full bg-[conic-gradient(from_0deg,transparent_0deg,color-mix(in_oklch,var(--primary)_28%,transparent)_40deg,transparent_70deg)]" />
-      <div className="absolute left-[38%] top-[30%] size-2 animate-blink rounded-full bg-primary shadow-[0_0_14px_var(--primary)]" />
-      <div className="absolute left-[62%] top-[58%] size-1.5 animate-blink rounded-full bg-glow-2 shadow-[0_0_14px_var(--glow-2)] [animation-delay:0.8s]" />
-      <div className="absolute left-[46%] top-[70%] size-1.5 animate-blink rounded-full bg-success shadow-[0_0_14px_var(--success)] [animation-delay:1.4s]" />
+    <div aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden">
+      <div className="absolute -left-24 top-10 size-96 animate-float rounded-full bg-[oklch(0.86_0.09_290)] opacity-50 blur-3xl" />
+      <div className="absolute bottom-0 left-1/3 size-80 animate-float rounded-full bg-[oklch(0.9_0.08_45)] opacity-60 blur-3xl [animation-delay:-5s]" />
+      <div className="absolute right-0 top-1/3 size-72 animate-float rounded-full bg-[oklch(0.9_0.07_350)] opacity-45 blur-3xl [animation-delay:-9s]" />
+    </div>
+  );
+}
+
+/** A small, static preview of what a check-in looks like. */
+function PreviewCard() {
+  return (
+    <div className="glass w-72 rotate-[-2deg] rounded-2xl p-4 shadow-lift ring-1 ring-white/80">
+      <div className="flex items-center gap-3">
+        <span className="flex size-10 items-center justify-center rounded-full bg-success/12 text-success">
+          <CheckCircle2 className="size-5" />
+        </span>
+        <div>
+          <p className="text-sm font-semibold">Checked in · 08:52 AM</p>
+          <p className="flex items-center gap-1 text-xs text-muted-foreground">
+            <Building2 className="size-3" /> Head Office · 12 m away
+          </p>
+        </div>
+      </div>
+      <div className="mt-4 space-y-1.5">
+        <div className="flex justify-between text-xs text-muted-foreground">
+          <span>Today&apos;s progress</span>
+          <span className="font-semibold text-foreground">72%</span>
+        </div>
+        <div className="h-2 overflow-hidden rounded-full bg-secondary">
+          <div className="h-full w-[72%] rounded-full bg-brand" />
+        </div>
+      </div>
     </div>
   );
 }
@@ -30,36 +50,38 @@ function Radar() {
 export function AuthShell({ title, subtitle, children }: { title: string; subtitle: string; children: React.ReactNode }) {
   return (
     <main className="relative grid min-h-screen overflow-hidden lg:grid-cols-[1.1fr_1fr]">
+      <Orbs />
       <section className="relative hidden flex-col justify-between p-12 lg:flex">
-        <Radar />
-        <Brand size="lg" className="relative" />
-        <div className="relative space-y-10">
+        <Brand size="lg" />
+        <div className="space-y-10">
           <div className="space-y-4">
-            <p className="font-mono text-xs uppercase tracking-[0.3em] text-primary">{"// Attendance OS"}</p>
-            <h2 className="max-w-md text-5xl font-semibold leading-[1.05] tracking-tight">
-              Presence, progress, <span className="text-brand">in real time.</span>
+            <h2 className="max-w-lg text-5xl font-bold leading-[1.08] tracking-tight">
+              Your team&apos;s day, <span className="text-brand">beautifully organised.</span>
             </h2>
+            <p className="max-w-md text-lg text-muted-foreground">
+              Attendance, tasks and daily reports in one calm, simple place.
+            </p>
           </div>
-          <ul className="max-w-md space-y-3">
-            {features.map(({ icon: Icon, title, text }) => (
-              <li
-                key={title}
-                className="glass flex gap-3 rounded-xl border border-white/[0.08] p-3.5 shadow-[inset_0_1px_0_0_oklch(1_0_0/0.05)]"
-              >
-                <span className="mt-0.5 h-fit rounded-lg bg-primary/10 p-2 text-primary ring-1 ring-primary/25">
-                  <Icon className="size-4" />
-                </span>
-                <div>
-                  <p className="font-medium">{title}</p>
-                  <p className="text-sm text-muted-foreground">{text}</p>
-                </div>
-              </li>
-            ))}
-          </ul>
+          <div className="flex items-end gap-8">
+            <ul className="max-w-sm flex-1 space-y-4">
+              {features.map(({ icon: Icon, title, text }) => (
+                <li key={title} className="flex gap-3">
+                  <span className="mt-0.5 h-fit rounded-xl bg-white/80 p-2 text-primary shadow-soft ring-1 ring-border/60">
+                    <Icon className="size-4" />
+                  </span>
+                  <div>
+                    <p className="font-semibold">{title}</p>
+                    <p className="text-sm text-muted-foreground">{text}</p>
+                  </div>
+                </li>
+              ))}
+            </ul>
+            <div className="hidden xl:block">
+              <PreviewCard />
+            </div>
+          </div>
         </div>
-        <p className="relative font-mono text-[11px] uppercase tracking-[0.2em] text-muted-foreground">
-          © {new Date().getFullYear()} WorkTrack · Secure session
-        </p>
+        <p className="text-sm text-muted-foreground">© {new Date().getFullYear()} WorkTrack</p>
       </section>
 
       <section className="relative z-10 flex items-center justify-center p-6">
@@ -67,13 +89,9 @@ export function AuthShell({ title, subtitle, children }: { title: string; subtit
           <div className="mb-8 flex justify-center lg:hidden">
             <Brand size="lg" />
           </div>
-          <div className="glass relative space-y-6 rounded-3xl border border-white/[0.09] p-6 shadow-[inset_0_1px_0_0_oklch(1_0_0/0.07),0_40px_80px_-40px_oklch(0_0_0/0.9)] sm:p-8">
-            <span
-              aria-hidden
-              className="absolute inset-x-10 -top-px h-px bg-gradient-to-r from-transparent via-primary to-transparent"
-            />
-            <div className="space-y-2">
-              <h1 className="text-2xl font-semibold tracking-tight">{title}</h1>
+          <div className="glass space-y-6 rounded-3xl p-6 shadow-lift ring-1 ring-white/80 sm:p-8">
+            <div className="space-y-1.5">
+              <h1 className="text-2xl font-bold tracking-tight">{title}</h1>
               <p className="text-sm text-muted-foreground">{subtitle}</p>
             </div>
             {children}

@@ -81,10 +81,10 @@ function LiveClock() {
   }, []);
   return (
     <div className="text-center">
-      <div className="text-brand font-mono text-4xl font-semibold tabular-nums tracking-tight drop-shadow-[0_0_18px_color-mix(in_oklch,var(--primary)_45%,transparent)]">
+      <div className="text-4xl font-bold tabular-nums tracking-tight">
         {now ? now.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", second: "2-digit" }) : "--:--:--"}
       </div>
-      <div className="mt-1 font-mono text-[10.5px] uppercase tracking-[0.25em] text-muted-foreground">
+      <div className="mt-1 text-sm text-muted-foreground">
         {now ? now.toLocaleDateString([], { weekday: "long", day: "numeric", month: "short" }) : " "}
       </div>
     </div>
@@ -121,24 +121,24 @@ function OrbButton({
         style={{ "--orb": color } as React.CSSProperties}
       >
         {!busy && (
-          <span aria-hidden className="absolute inset-0 animate-pulse-ring rounded-full border-2 border-[var(--orb)]" />
+          <span aria-hidden className="absolute inset-0 animate-pulse-ring rounded-full bg-[var(--orb)]/25" />
         )}
         <span
           aria-hidden
           className={cn(
             "absolute inset-0 rounded-full p-[2px]",
-            "bg-[conic-gradient(from_0deg,var(--orb),var(--glow-2),transparent_70%,var(--orb))]",
+            "bg-[conic-gradient(from_0deg,var(--orb),var(--accent-2),color-mix(in_oklch,var(--orb)_20%,transparent)_70%,var(--orb))]",
             busy ? "animate-spin-slow" : "opacity-80",
           )}
         >
-          <span className="block size-full rounded-full bg-background" />
+          <span className="block size-full rounded-full bg-white" />
         </span>
         <span
           className={cn(
-            "absolute inset-3 flex flex-col items-center justify-center gap-1.5 rounded-full border border-white/10 transition-all duration-300",
-            "bg-[radial-gradient(circle_at_50%_30%,color-mix(in_oklch,var(--orb)_30%,transparent),color-mix(in_oklch,var(--orb)_6%,transparent)_70%)]",
-            "shadow-[0_0_40px_-8px_var(--orb),inset_0_1px_0_0_oklch(1_0_0/0.15)]",
-            "group-hover:shadow-[0_0_60px_-6px_var(--orb),inset_0_1px_0_0_oklch(1_0_0/0.2)] group-focus-visible:ring-4 group-focus-visible:ring-[var(--orb)]/40",
+            "absolute inset-3 flex flex-col items-center justify-center gap-1.5 rounded-full transition-all duration-300",
+            "bg-[radial-gradient(circle_at_50%_25%,color-mix(in_oklch,var(--orb)_12%,white),white_75%)]",
+            "shadow-[0_14px_34px_-14px_color-mix(in_oklch,var(--orb)_70%,transparent),inset_0_-6px_14px_-8px_color-mix(in_oklch,var(--orb)_30%,transparent)]",
+            "group-hover:scale-[1.03] group-focus-visible:ring-4 group-focus-visible:ring-[var(--orb)]/30",
           )}
         >
           {busy ? (
@@ -146,7 +146,7 @@ function OrbButton({
           ) : (
             <Icon className="size-7 text-[var(--orb)]" />
           )}
-          <span className="font-mono text-xs font-semibold uppercase tracking-[0.2em]">{busy ? "Scanning" : label}</span>
+          <span className="text-base font-bold">{busy ? "Locating" : label}</span>
           {busy && <span className="max-w-28 text-center text-[10px] leading-tight text-muted-foreground">{busyLabel}</span>}
         </span>
       </button>
@@ -205,15 +205,15 @@ export function CheckInCard({ state, officeName, shiftStart, summary, children }
         <LiveClock />
 
         {summary && (
-          <dl className="grid grid-cols-3 divide-x divide-white/[0.08] rounded-xl border border-white/[0.08] bg-white/[0.03] py-3 text-center text-sm">
+          <dl className="grid grid-cols-3 divide-x divide-border rounded-2xl bg-muted/70 py-3 text-center text-sm ring-1 ring-border/60">
             {[
               ["Check in", summary.checkIn],
               ["Check out", summary.checkOut],
               ["Worked", summary.worked],
             ].map(([label, value]) => (
               <div key={label} className="px-2">
-                <dt className="font-mono text-[10px] uppercase tracking-[0.16em] text-muted-foreground">{label}</dt>
-                <dd className="mt-1 font-mono font-medium tabular-nums">{value}</dd>
+                <dt className="text-xs text-muted-foreground">{label}</dt>
+                <dd className="mt-0.5 font-semibold tabular-nums">{value}</dd>
               </div>
             ))}
           </dl>
@@ -244,7 +244,7 @@ export function CheckInCard({ state, officeName, shiftStart, summary, children }
           />
         )}
         {state === "checked_out" && (
-          <div className="flex items-center justify-center gap-2 rounded-xl border border-success/30 bg-success/10 p-3 text-sm font-medium text-success shadow-[0_0_24px_-10px_var(--success)]">
+          <div className="flex items-center justify-center gap-2 rounded-xl border border-success/30 bg-success/10 p-3 text-sm font-medium text-[color-mix(in_oklch,var(--success),black_15%)]">
             <CheckCircle2 className="size-4" /> Attendance completed for today
           </div>
         )}

@@ -1,5 +1,5 @@
 const shimmer =
-  "animate-shimmer rounded-2xl border border-white/[0.06] bg-[linear-gradient(90deg,oklch(1_0_0/0.03)_0%,oklch(1_0_0/0.08)_50%,oklch(1_0_0/0.03)_100%)] bg-[length:200%_100%]";
+  "animate-shimmer rounded-2xl bg-[linear-gradient(90deg,var(--muted)_0%,oklch(1_0_0/0.9)_50%,var(--muted)_100%)] bg-[length:200%_100%] ring-1 ring-border/60";
 
 export default function Loading() {
   return (

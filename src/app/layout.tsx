@@ -1,10 +1,10 @@
 import type { Metadata, Viewport } from "next";
-import { Geist_Mono, Space_Grotesk } from "next/font/google";
+import { Geist_Mono, Plus_Jakarta_Sans } from "next/font/google";
 import { Toaster } from "sonner";
 import "./globals.css";
 
-const spaceGrotesk = Space_Grotesk({
-  variable: "--font-display",
+const jakarta = Plus_Jakarta_Sans({
+  variable: "--font-jakarta",
   subsets: ["latin"],
 });
 
@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-export const viewport: Viewport = { themeColor: "#0b0e1a", colorScheme: "dark" };
+export const viewport: Viewport = { themeColor: "#fbf9f6", colorScheme: "light" };
 
 export const metadata: Metadata = {
   title: { default: "WorkTrack", template: "%s · WorkTrack" },
@@ -22,10 +22,10 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en" className={`${spaceGrotesk.variable} ${geistMono.variable} dark h-full antialiased`}>
+    <html lang="en" className={`${jakarta.variable} ${geistMono.variable} h-full antialiased`}>
       <body className="min-h-full font-sans">
         {children}
-        <Toaster theme="dark" richColors position="top-right" closeButton />
+        <Toaster theme="light" richColors position="top-right" closeButton />
       </body>
     </html>
   );

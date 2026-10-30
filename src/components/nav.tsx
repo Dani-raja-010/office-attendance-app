@@ -36,19 +36,20 @@ function NavLink({ href, label, icon: Icon }: (typeof employeeLinks)[number]) {
       href={href}
       aria-current={active ? "page" : undefined}
       className={cn(
-        "relative flex shrink-0 items-center gap-2.5 rounded-lg px-3 py-2 text-sm font-medium transition-all",
+        "flex shrink-0 items-center gap-2.5 rounded-xl px-3 py-2 text-sm font-medium transition-all",
         active
-          ? "bg-primary/10 text-primary shadow-[inset_0_0_0_1px_color-mix(in_oklch,var(--primary)_25%,transparent)]"
-          : "text-sidebar-muted hover:bg-white/[0.05] hover:text-sidebar-foreground",
+          ? "bg-white text-primary shadow-soft ring-1 ring-border/70"
+          : "text-sidebar-muted hover:bg-white/60 hover:text-sidebar-foreground",
       )}
     >
-      {active && (
-        <span
-          aria-hidden
-          className="absolute -left-3 top-1/2 hidden h-5 w-1 -translate-y-1/2 rounded-r-full bg-primary shadow-[0_0_12px_var(--primary)] lg:block"
-        />
-      )}
-      <Icon className="size-4" />
+      <span
+        className={cn(
+          "flex size-7 items-center justify-center rounded-lg transition-colors",
+          active ? "bg-brand text-primary-foreground" : "bg-transparent",
+        )}
+      >
+        <Icon className="size-4" />
+      </span>
       {label}
     </Link>
   );
@@ -56,12 +57,7 @@ function NavLink({ href, label, icon: Icon }: (typeof employeeLinks)[number]) {
 
 function SectionLabel({ children, first }: { children: React.ReactNode; first?: boolean }) {
   return (
-    <p
-      className={cn(
-        "hidden px-3 pb-1.5 font-mono text-[10px] uppercase tracking-[0.2em] text-sidebar-muted/80 lg:block",
-        first ? "pt-1" : "pt-6",
-      )}
-    >
+    <p className={cn("hidden px-3 pb-1.5 text-xs font-semibold text-sidebar-muted/80 lg:block", first ? "pt-1" : "pt-6")}>
       {children}
     </p>
   );
@@ -70,13 +66,13 @@ function SectionLabel({ children, first }: { children: React.ReactNode; first?: 
 export function Nav({ isAdmin }: { isAdmin: boolean }) {
   return (
     <nav className="flex gap-1 overflow-x-auto lg:flex-col lg:overflow-visible">
-      <SectionLabel first>{"// Workspace"}</SectionLabel>
+      <SectionLabel first>Workspace</SectionLabel>
       {employeeLinks.map((l) => (
         <NavLink key={l.href} {...l} />
       ))}
       {isAdmin && (
         <>
-          <SectionLabel>{"// Command"}</SectionLabel>
+          <SectionLabel>Administration</SectionLabel>
           {adminLinks.map((l) => (
             <NavLink key={l.href} {...l} />
           ))}

@@ -1,40 +1,38 @@
 @import "tailwindcss";
 
-@custom-variant dark (&:is(.dark *));
-
-/* "Neon glass": a single dark theme with cyan → violet accents. */
+/* "Soft aurora": a light theme on warm ivory with pastel washes and an indigo → rose accent. */
 :root {
-  color-scheme: dark;
-  --radius: 0.75rem;
-  --background: oklch(0.13 0.02 268);
-  --foreground: oklch(0.96 0.01 250);
-  --card: oklch(0.19 0.028 268 / 0.62);
-  --card-foreground: oklch(0.96 0.01 250);
-  --popover: oklch(0.18 0.03 268);
-  --popover-foreground: oklch(0.96 0.01 250);
-  --primary: oklch(0.83 0.14 200);
-  --primary-foreground: oklch(0.16 0.03 260);
-  --glow-2: oklch(0.68 0.23 300);
-  --secondary: oklch(1 0 0 / 0.06);
-  --secondary-foreground: oklch(0.94 0.01 250);
-  --muted: oklch(1 0 0 / 0.05);
-  --muted-foreground: oklch(0.7 0.03 255);
-  --accent: oklch(1 0 0 / 0.07);
-  --accent-foreground: oklch(0.96 0.01 250);
-  --destructive: oklch(0.68 0.21 18);
-  --success: oklch(0.82 0.18 158);
-  --warning: oklch(0.85 0.15 82);
-  --border: oklch(1 0 0 / 0.08);
-  --input: oklch(1 0 0 / 0.12);
-  --ring: oklch(0.83 0.14 200);
-  --sidebar: oklch(0.16 0.025 268 / 0.72);
-  --sidebar-foreground: oklch(0.93 0.01 250);
-  --sidebar-muted: oklch(0.66 0.03 258);
-  --sidebar-accent: oklch(1 0 0 / 0.06);
+  color-scheme: light;
+  --radius: 0.875rem;
+  --background: oklch(0.986 0.006 85);
+  --foreground: oklch(0.26 0.035 280);
+  --card: oklch(1 0 0 / 0.78);
+  --card-foreground: oklch(0.26 0.035 280);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.26 0.035 280);
+  --primary: oklch(0.55 0.2 283);
+  --primary-foreground: oklch(0.99 0.005 280);
+  --accent-2: oklch(0.72 0.15 350);
+  --secondary: oklch(0.955 0.015 285);
+  --secondary-foreground: oklch(0.33 0.06 283);
+  --muted: oklch(0.965 0.008 285);
+  --muted-foreground: oklch(0.53 0.03 280);
+  --accent: oklch(0.95 0.025 285);
+  --accent-foreground: oklch(0.36 0.12 283);
+  --destructive: oklch(0.6 0.2 22);
+  --success: oklch(0.62 0.14 162);
+  --warning: oklch(0.72 0.15 62);
+  --border: oklch(0.915 0.012 285);
+  --input: oklch(0.89 0.016 285);
+  --ring: oklch(0.55 0.2 283);
+  --sidebar: oklch(1 0 0 / 0.7);
+  --sidebar-foreground: oklch(0.3 0.04 280);
+  --sidebar-muted: oklch(0.55 0.03 280);
+  --sidebar-accent: oklch(0.95 0.025 285);
 }
 
 @theme inline {
-  --font-sans: var(--font-display);
+  --font-sans: var(--font-jakarta);
   --font-mono: var(--font-geist-mono);
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -44,7 +42,7 @@
   --color-popover-foreground: var(--popover-foreground);
   --color-primary: var(--primary);
   --color-primary-foreground: var(--primary-foreground);
-  --color-glow-2: var(--glow-2);
+  --color-accent-2: var(--accent-2);
   --color-secondary: var(--secondary);
   --color-secondary-foreground: var(--secondary-foreground);
   --color-muted: var(--muted);
@@ -61,53 +59,50 @@
   --color-sidebar-foreground: var(--sidebar-foreground);
   --color-sidebar-muted: var(--sidebar-muted);
   --color-sidebar-accent: var(--sidebar-accent);
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 2px);
+  --radius-sm: calc(var(--radius) - 6px);
+  --radius-md: calc(var(--radius) - 3px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
   --radius-2xl: calc(var(--radius) + 8px);
 
+  --shadow-soft: 0 1px 2px oklch(0.3 0.05 280 / 0.04), 0 8px 24px -12px oklch(0.3 0.08 280 / 0.12);
+  --shadow-lift: 0 2px 4px oklch(0.3 0.05 280 / 0.04), 0 18px 40px -16px oklch(0.35 0.12 283 / 0.22);
+
   --animate-spin-slow: spin 2.4s linear infinite;
-  --animate-pulse-ring: pulse-ring 2.4s cubic-bezier(0.2, 0.6, 0.3, 1) infinite;
+  --animate-pulse-ring: pulse-ring 2.6s cubic-bezier(0.2, 0.6, 0.3, 1) infinite;
   --animate-shimmer: shimmer 1.6s linear infinite;
-  --animate-blink: blink 2s ease-in-out infinite;
+  --animate-float: float 14s ease-in-out infinite;
 
   @keyframes pulse-ring {
-    0% { transform: scale(0.92); opacity: 0.7; }
-    80%, 100% { transform: scale(1.25); opacity: 0; }
+    0% { transform: scale(0.94); opacity: 0.55; }
+    80%, 100% { transform: scale(1.22); opacity: 0; }
   }
   @keyframes shimmer {
     from { background-position: -200% 0; }
     to { background-position: 200% 0; }
   }
-  @keyframes blink {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.35; }
+  @keyframes float {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    50% { transform: translate(2rem, -1.5rem) scale(1.06); }
   }
 }
 
-/* Frosted translucent surface used by cards, the sidebar and dialogs. */
+/* Frosted white surface used by cards, the sidebar and the sign-in card. */
 @utility glass {
   background-color: var(--card);
-  backdrop-filter: blur(18px) saturate(150%);
-  -webkit-backdrop-filter: blur(18px) saturate(150%);
+  backdrop-filter: blur(20px) saturate(160%);
+  -webkit-backdrop-filter: blur(20px) saturate(160%);
 }
 
 @utility bg-brand {
-  background-image: linear-gradient(120deg, var(--primary), var(--glow-2));
+  background-image: linear-gradient(120deg, var(--primary), var(--accent-2));
 }
 
 @utility text-brand {
-  background-image: linear-gradient(100deg, var(--primary), var(--glow-2));
+  background-image: linear-gradient(100deg, var(--primary), var(--accent-2));
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
-}
-
-@utility glow {
-  box-shadow:
-    0 0 0 1px color-mix(in oklch, var(--primary) 35%, transparent),
-    0 0 28px -6px color-mix(in oklch, var(--primary) 70%, transparent);
 }
 
 @layer base {
@@ -120,20 +115,18 @@
   body {
     @apply text-foreground;
     background-color: var(--background);
-    /* Soft aurora glows over a faint blueprint grid. */
+    /* Pastel washes: lavender, peach and mint. */
     background-image:
-      radial-gradient(60rem 40rem at 85% -10%, color-mix(in oklch, var(--glow-2) 22%, transparent), transparent 70%),
-      radial-gradient(50rem 36rem at -10% 110%, color-mix(in oklch, var(--primary) 16%, transparent), transparent 70%),
-      linear-gradient(to right, oklch(1 0 0 / 0.035) 1px, transparent 1px),
-      linear-gradient(to bottom, oklch(1 0 0 / 0.035) 1px, transparent 1px);
-    background-size: auto, auto, 44px 44px, 44px 44px;
+      radial-gradient(48rem 34rem at 100% -5%, oklch(0.9 0.06 290 / 0.55), transparent 70%),
+      radial-gradient(40rem 30rem at -5% 105%, oklch(0.93 0.06 50 / 0.6), transparent 70%),
+      radial-gradient(34rem 26rem at 55% 55%, oklch(0.95 0.04 170 / 0.35), transparent 70%);
     background-attachment: fixed;
   }
   ::selection {
-    background: color-mix(in oklch, var(--primary) 35%, transparent);
+    background: color-mix(in oklch, var(--primary) 18%, transparent);
   }
   h1, h2, h3 {
-    letter-spacing: -0.02em;
+    letter-spacing: -0.025em;
   }
 }
 

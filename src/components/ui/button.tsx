@@ -4,20 +4,20 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg text-sm font-medium tracking-wide transition-all duration-200 active:scale-[0.98] disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:ring-[3px] focus-visible:ring-ring/40",
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-xl text-sm font-semibold transition-all duration-200 active:scale-[0.98] disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:ring-[3px] focus-visible:ring-ring/40",
   {
     variants: {
       variant: {
         default:
-          "bg-brand font-semibold text-primary-foreground shadow-[0_0_22px_-8px_var(--primary)] hover:shadow-[0_0_30px_-4px_var(--primary)] hover:brightness-110",
+          "bg-brand text-primary-foreground shadow-[0_6px_16px_-6px_color-mix(in_oklch,var(--primary)_55%,transparent)] hover:-translate-y-px hover:shadow-[0_10px_22px_-8px_color-mix(in_oklch,var(--primary)_60%,transparent)]",
         destructive:
-          "bg-destructive/90 font-semibold text-white shadow-[0_0_22px_-8px_var(--destructive)] hover:bg-destructive hover:shadow-[0_0_30px_-4px_var(--destructive)]",
+          "bg-destructive text-white shadow-[0_6px_16px_-6px_color-mix(in_oklch,var(--destructive)_55%,transparent)] hover:-translate-y-px hover:bg-destructive/90",
         success:
-          "bg-success font-semibold text-primary-foreground shadow-[0_0_22px_-8px_var(--success)] hover:shadow-[0_0_30px_-4px_var(--success)]",
+          "bg-success text-white shadow-[0_6px_16px_-6px_color-mix(in_oklch,var(--success)_55%,transparent)] hover:-translate-y-px hover:bg-success/90",
         outline:
-          "border border-white/12 bg-white/[0.03] hover:border-primary/50 hover:bg-primary/10 hover:text-primary",
-        secondary: "border border-white/8 bg-secondary text-secondary-foreground hover:bg-white/10",
-        ghost: "text-muted-foreground hover:bg-white/[0.06] hover:text-foreground",
+          "border border-border bg-white/80 text-foreground shadow-soft hover:border-primary/40 hover:bg-accent hover:text-accent-foreground",
+        secondary: "bg-secondary text-secondary-foreground hover:bg-accent",
+        ghost: "text-muted-foreground hover:bg-accent hover:text-accent-foreground",
         link: "text-primary underline-offset-4 hover:underline",
       },
       size: {
